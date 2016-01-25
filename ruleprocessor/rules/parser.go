@@ -1,6 +1,8 @@
 package rules
 
 //import "fmt"
+
+// hashcat rules
 const (
 	RULE_OP_MANGLE_NOOP           = ':'
 	RULE_OP_MANGLE_LREST          = 'l'
@@ -46,7 +48,6 @@ const (
 	RULE_OP_REJECT_CONTAINS    = '%'
 	RULE_OP_REJECT_MEMORY      = 'Q'
 
-	// hashcat only
 	RULE_OP_MANGLE_SWITCH_FIRST    = 'k'
 	RULE_OP_MANGLE_SWITCH_LAST     = 'K'
 	RULE_OP_MANGLE_SWITCH_AT       = '*'
@@ -66,10 +67,13 @@ const (
 // a rule is the entire line
 // if one piece is not right then skip the rest of the line
 
+
+// ParseLine parses a string for hashcat rules then returns a slice of the valid rule.
+// One line is considered one rule.
+func ParseLine(line string) (rules []string) {
 // needs better rule checking.
 // eg length of rule
 // eg X008 doesnt make sense
-func ParseLine(line string) (rules []string) {
 	//fmt.Println(line)
 	if len(line) != 0 && rune(line[0]) == '#' {
 		return nil
@@ -372,8 +376,9 @@ func ParseLine(line string) (rules []string) {
 }
 
 
-// maybe make rules [][]rune so indexing is based on rune and not byte
+// ApplyRules applies a hashcat rule to a single word.
 func ApplyRules(rules []string, word string) string {
+// maybe make rules [][]rune so indexing is based on rune and not byte
 	if rules == nil || word == "" {
 		return ""
 	}

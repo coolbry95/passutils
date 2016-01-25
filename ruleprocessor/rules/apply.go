@@ -15,7 +15,7 @@ import (
 // global memorized word
 var Saved []rune
 
-// converts A-Z to ints
+// ToNum converts A-Z to ints
 func ToNum(char rune) int {
 	if char <= 57 && char >= 48 {
 		return int(char) - 48

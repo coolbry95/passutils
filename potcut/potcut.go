@@ -1,3 +1,4 @@
+// potcut extracts plain text passwords from pot files
 package main
 
 import (

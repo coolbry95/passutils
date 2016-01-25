@@ -1,3 +1,5 @@
+// rule applies rules to wordlists
+// it handles UTF-8 rules such as appending $世
 package main
 
 import (

@@ -1,3 +1,4 @@
+// maskgen generates masks for use with hashcat
 package main
 
 // this version uses a table instead of a switch
