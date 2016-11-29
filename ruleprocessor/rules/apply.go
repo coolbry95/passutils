@@ -1,4 +1,8 @@
+// Package rules contains all of the functions for hashcat rules
 package rules
+
+//TODO add documentation
+// https://godoc.org/github.com/coolbry95/passutils/ruleprocessor/rules
 
 import (
 	"unicode"
@@ -36,9 +40,7 @@ func ToAlpha(num int) rune {
 
 // :
 func Nothing(word []rune) []rune {
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	return temp
+	return word
 }
 
 // l
@@ -46,14 +48,12 @@ func Lowercase(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
 	// keep strings.Tolower() and then convert back to rune?
 	// only operates on single rune
-	for i, v := range temp {
-		temp[i] = unicode.ToLower(v)
+	for i, v := range word {
+		word[i] = unicode.ToLower(v)
 	}
-	return temp
+	return word
 }
 
 // u
@@ -61,12 +61,10 @@ func Uppercase(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	for i, v := range temp {
-		temp[i] = unicode.ToUpper(v)
+	for i, v := range word {
+		word[i] = unicode.ToUpper(v)
 	}
-	return temp
+	return word
 }
 
 // c
@@ -74,16 +72,14 @@ func Capitalize(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	for i, v := range temp {
+	for i, v := range word {
 		if i == 0 {
-			temp[i] = unicode.ToUpper(v)
+			word[i] = unicode.ToUpper(v)
 			continue
 		}
-		temp[i] = unicode.ToLower(v)
+		word[i] = unicode.ToLower(v)
 	}
-	return temp
+	return word
 }
 
 // C
@@ -91,16 +87,14 @@ func InvertCapitalize(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	for i, v := range temp {
+	for i, v := range word {
 		if i == 0 {
-			temp[i] = unicode.ToLower(v)
+			word[i] = unicode.ToLower(v)
 			continue
 		}
-		temp[i] = unicode.ToUpper(v)
+		word[i] = unicode.ToUpper(v)
 	}
-	return temp
+	return word
 }
 
 // t
@@ -108,19 +102,17 @@ func ToggleCase(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	for i, v := range temp {
+	for i, v := range word {
 		switch {
 		case unicode.IsUpper(v):
-			temp[i] = unicode.ToLower(v)
+			word[i] = unicode.ToLower(v)
 		case unicode.IsLower(v):
-			temp[i] = unicode.ToUpper(v)
+			word[i] = unicode.ToUpper(v)
 		default:
-			temp[i] = v
+			word[i] = v
 		}
 	}
-	return temp
+	return word
 }
 
 // TN
@@ -131,17 +123,15 @@ func ToggleAt(word []rune, n int) []rune {
 	if len(word)-1 < n {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
 	switch {
-	case unicode.IsUpper(temp[n]):
-		temp[n] = unicode.ToLower(temp[n])
-	case unicode.IsLower(temp[n]):
-		temp[n] = unicode.ToUpper(temp[n])
+	case unicode.IsUpper(word[n]):
+		word[n] = unicode.ToLower(word[n])
+	case unicode.IsLower(word[n]):
+		word[n] = unicode.ToUpper(word[n])
 	default:
-		return temp
+		return word
 	}
-	return temp
+	return word
 }
 
 // https://stackoverflow.com/questions/1752414/how-to-reverse-a-string-in-go
@@ -150,12 +140,10 @@ func Reverse(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	for i, j := 0, len(temp)-1; i < j; i, j = i+1, j-1 {
-		temp[i], temp[j] = temp[j], temp[i]
+	for i, j := 0, len(word)-1; i < j; i, j = i+1, j-1 {
+		word[i], word[j] = word[j], word[i]
 	}
-	return temp
+	return word
 }
 
 // d
@@ -163,8 +151,8 @@ func Duplicate(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, 0, len(word)*2)
-	temp = append(temp, word[:]...)
+	temp := make([]rune, len(word), len(word)*2)
+	copy(temp, word)
 	temp = append(temp, word[:]...)
 	return temp
 }
@@ -181,7 +169,7 @@ func DuplicateN(word []rune, n int) []rune {
 	return temp
 }
 
-// f
+// f didnt change yet
 func Reflect(word []rune) []rune {
 	if len(word) == 0 {
 		return word
@@ -204,9 +192,11 @@ func RotateLeft(word []rune) []rune {
 	if len(word)-1 < 0 {
 		return word
 	}
+
 	temp := make([]rune, 0, len(word))
 	temp = append(temp, word[1:]...)
 	temp = append(temp, word[0])
+
 	return temp
 }
 
@@ -229,10 +219,8 @@ func AppendCharacter(word []rune, char rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	temp = append(temp, char)
-	return temp
+	word = append(word, char)
+	return word
 }
 
 // ^X
@@ -253,9 +241,7 @@ func TruncateLeft(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	return temp[1:]
+	return word[1:]
 }
 
 // ]
@@ -263,9 +249,7 @@ func TruncateRight(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	return temp[:len(temp)-1]
+	return word[:len(word)-1]
 }
 
 // DN
@@ -276,10 +260,13 @@ func DeleteN(word []rune, n int) []rune {
 	if len(word)-1 < n {
 		return word
 	}
-	temp := make([]rune, 0, len(word)-n)
-	temp = append(temp, word[:n]...)
-	temp = append(temp, word[n+1:]...)
-	return temp
+	/*
+		temp := make([]rune, 0, len(word)-n)
+		temp = append(temp, word[:n]...)
+		temp = append(temp, word[n+1:]...)
+	*/
+	word = append(word[:n], word[n+1:]...)
+	return word
 }
 
 // xNM
@@ -292,10 +279,9 @@ func ExtractRange(word []rune, n, m int) []rune {
 		return nil
 	}
 
-	temp := make([]rune, 0, m)
-	temp = append(temp, word[n:m+n]...)
+	word = word[n : m+n]
 
-	return temp
+	return word
 }
 
 // ONM
@@ -314,10 +300,13 @@ func OmitRange(word []rune, n, m int) []rune {
 			return ""
 		}
 	*/
-	temp := make([]rune, 0, n+m)
-	temp = append(temp, word[:n]...)
-	temp = append(temp, word[m+n:]...)
-	return temp
+	/*
+		temp := make([]rune, 0, n+m)
+		temp = append(temp, word[:n]...)
+		temp = append(temp, word[m+n:]...)
+	*/
+	word = append(word[:n], word[m+n:]...)
+	return word
 }
 
 // iNX
@@ -334,6 +323,8 @@ func InsertAtN(word []rune, n int, char rune) []rune {
 	temp = append(temp, word[:n]...)
 	temp = append(temp, char)
 	temp = append(temp, word[n:]...)
+	//word = append(word[:n], char, word[n:]...)
+	//word = append(word[:n], append([]rune{char}, word[n:]...)...)
 	return temp
 }
 
@@ -345,11 +336,14 @@ func OverwriteAtN(word []rune, n int, char rune) []rune {
 	if len(word)-1 < n {
 		return word
 	}
-	temp := make([]rune, 0, len(word)+1)
-	temp = append(temp, word[:n]...)
-	temp = append(temp, char)
-	temp = append(temp, word[n+1:]...)
-	return temp
+	/*
+		temp := make([]rune, 0, len(word)+1)
+		temp = append(temp, word[:n]...)
+		temp = append(temp, char)
+		temp = append(temp, word[n+1:]...)
+	*/
+	word[n] = char
+	return word
 }
 
 // 'N
@@ -367,9 +361,13 @@ func TruncateAtN(word []rune, n int) []rune {
 	}
 	// or here
 	// FIXME
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	return temp[:n]
+	/*
+		temp := make([]rune, len(word))
+		copy(temp, word)
+		return temp[:n]
+	*/
+	word = word[:n]
+	return word
 }
 
 // sXY
@@ -378,14 +376,12 @@ func Replace(word []rune, x, y rune) []rune {
 		return word
 	}
 
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	for i := 0; i < len(temp); i++ {
-		if temp[i] == x {
-			temp[i] = y
+	for i := range word {
+		if word[i] == x {
+			word[i] = y
 		}
 	}
-	return temp
+	return word
 }
 
 // @X
@@ -425,11 +421,15 @@ func DuplicateLastN(word []rune, n int) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, 0, len(word)+n)
-	temp = append(temp, word[:]...)
+
+	temp := make([]rune, len(word), len(word)+n)
+
+	copy(temp, word)
+
 	for i := 0; i < n; i++ {
 		temp = append(temp, word[len(word)-1])
 	}
+
 	return temp
 }
 
@@ -456,8 +456,9 @@ func ExtractMemory(word []rune, n, m, i int) []rune {
 		return nil
 	}
 
-	temp := make([]rune, 0, len(word)+(n+m))
-	temp = append(temp, word[:i]...)
+	temp := make([]rune, len(word[:i]), len(word)+(n+m))
+	//temp = append(temp, word[:i]...)
+	copy(temp, word[:i])
 	temp = append(temp, Saved[n:m+n]...)
 	temp = append(temp, word[i:]...)
 
@@ -469,13 +470,16 @@ func AppendMemory(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, 0, len(word)+len(Saved))
+	//temp := make([]rune, 0, len(word)+len(Saved))
 	// use copy instead??
 	// append to word instead of making new variable
 
-	temp = append(temp, word[:]...)
-	temp = append(temp, Saved[:]...)
-	return temp
+	/*
+		temp = append(temp, word[:]...)
+		temp = append(temp, Saved[:]...)
+	*/
+	word = append(word, Saved[:]...)
+	return word
 }
 
 // 6
@@ -483,10 +487,12 @@ func PrependMemory(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
+
 	temp := make([]rune, 0, len(word)+len(Saved))
 	// use copy instead??
 	temp = append(temp, Saved[:]...)
 	temp = append(temp, word[:]...)
+
 	return temp
 }
 
@@ -524,8 +530,8 @@ func RejectGreater(word []rune, n int) bool {
 // use index instead?
 // !X
 func RejectContain(word []rune, char rune) bool {
-	for i := 0; i < len(word); i++ {
-		if word[i] == char {
+	for _, v := range word {
+		if v == char {
 			return true
 		}
 	}
@@ -534,8 +540,8 @@ func RejectContain(word []rune, char rune) bool {
 
 // /X
 func RejectNotContain(word []rune, char rune) bool {
-	for i := 0; i < len(word); i++ {
-		if word[i] == char {
+	for _, v := range word {
+		if v == char {
 			return false
 		}
 	}
@@ -572,8 +578,8 @@ func RejectEqualAt(word []rune, char rune, n int) bool {
 // %NX
 func RejectContains(word []rune, char rune, n int) bool {
 	count := 0
-	for i := 0; i < len(word); i++ {
-		if word[i] == char {
+	for _, v := range word {
+		if v == char {
 			count++
 		}
 	}
@@ -592,9 +598,10 @@ func RejectMemory(word []rune) bool {
 	if word == nil || Saved == nil {
 		return false
 	}
-	if len(word) != len(Saved) {
+	if len(word) < len(Saved) {
 		return false
 	}
+
 	for i := range word {
 		if word[i] != Saved[i] {
 			return false
@@ -609,10 +616,8 @@ func SwapFront(word []rune) []rune {
 	if len(word) == 1 || len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	temp[0], temp[1] = temp[1], temp[0]
-	return temp
+	word[0], word[1] = word[1], word[0]
+	return word
 }
 
 // K
@@ -620,10 +625,10 @@ func SwapBack(word []rune) []rune {
 	if len(word) == 1 || len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	temp[len(temp)-1], temp[len(temp)-2] = temp[len(temp)-2], temp[len(temp)-1]
-	return temp
+
+	word[len(word)-1], word[len(word)-2] = word[len(word)-2], word[len(word)-1]
+
+	return word
 }
 
 // *XY
@@ -638,10 +643,8 @@ func SwapAtN(word []rune, x, y int) []rune {
 		return word
 	}
 
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	temp[x], temp[y] = temp[y], temp[x]
-	return temp
+	word[x], word[y] = word[y], word[x]
+	return word
 }
 
 // LN
@@ -649,12 +652,10 @@ func BitwiseShiftLeft(word []rune, n int) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
 
-	temp[n] = temp[n] << 1
+	word[n] = word[n] << 1
 
-	return temp
+	return word
 }
 
 // RN
@@ -662,10 +663,8 @@ func BitwiseShiftRight(word []rune, n int) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	temp[n] = temp[n] >> 1
-	return temp
+	word[n] = word[n] >> 1
+	return word
 }
 
 // +N
@@ -673,10 +672,8 @@ func ASCIIIncrementPlus(word []rune, n int) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	temp[n] = temp[n] + 1
-	return temp
+	word[n] = word[n] + 1
+	return word
 }
 
 // -N
@@ -684,10 +681,8 @@ func ASCIIIncrementMinus(word []rune, n int) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	temp[n] = temp[n] - 1
-	return temp
+	word[n] = word[n] - 1
+	return word
 }
 
 // .N
@@ -698,11 +693,14 @@ func ReplaceNPlus(word []rune, n int) []rune {
 	if n >= len(word)-1 {
 		return word
 	}
-	temp := make([]rune, 0, len(word))
-	temp = append(temp, word[:n]...)
-	temp = append(temp, word[n+1])
-	temp = append(temp, word[n+1:]...)
-	return temp
+	/*
+		temp := make([]rune, 0, len(word))
+		temp = append(temp, word[:n]...)
+		temp = append(temp, word[n+1])
+		temp = append(temp, word[n+1:]...)
+	*/
+	word[n] = word[n+1]
+	return word
 }
 
 // ,N
@@ -730,9 +728,11 @@ func DuplicateBlockFront(word []rune, n int) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, 0, len(word)+n)
-	temp = append(temp, word[:n]...)
+
+	temp := make([]rune, len(word[:n]), len(word)+n)
+	copy(temp, word[:n])
 	temp = append(temp, word[:]...)
+
 	return temp
 }
 
@@ -741,9 +741,11 @@ func DuplicateBlockBack(word []rune, n int) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, 0, len(word)+n)
-	temp = append(temp, word[:]...)
+
+	temp := make([]rune, len(word), len(word)+n)
+	copy(temp, word)
 	temp = append(temp, word[len(word)-n:]...)
+
 	return temp
 }
 
@@ -752,21 +754,38 @@ func Title(word []rune) []rune {
 	if len(word) == 0 {
 		return word
 	}
-	temp := make([]rune, len(word))
-	copy(temp, word)
-	temp[0] = unicode.ToUpper(temp[0])
-	for i := 1; i <= len(temp)-1; i++ {
-		if temp[i] == ' ' {
+	word[0] = unicode.ToUpper(word[0])
+	for i := 1; i <= len(word)-1; i++ {
+		if word[i] == ' ' {
 			/*
 				if i == len(word)-1 {
 					break
 				}
 			*/
-			temp[i+1] = unicode.ToUpper(temp[i+1])
+			word[i+1] = unicode.ToUpper(word[i+1])
 			i++
 		} else {
-			temp[i] = unicode.ToLower(temp[i])
+			word[i] = unicode.ToLower(word[i])
 		}
 	}
-	return temp
+	return word
+	/*
+		temp := make([]rune, len(word))
+		copy(temp, word)
+		temp[0] = unicode.ToUpper(temp[0])
+		for i := 1; i <= len(temp)-1; i++ {
+			if temp[i] == ' ' {
+				//
+					if i == len(word)-1 {
+						break
+					}
+				//
+				temp[i+1] = unicode.ToUpper(temp[i+1])
+				i++
+			} else {
+				temp[i] = unicode.ToLower(temp[i])
+			}
+		}
+		return temp
+	*/
 }
