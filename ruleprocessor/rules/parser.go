@@ -62,6 +62,13 @@ const (
 	RULE_OP_MANGLE_TITLE           = 'E'
 )
 
+// use a lookup for fast mangling
+// map[rune]func(a []rune, b int, c int)
+// use the largest func signature and then
+// use func(a []rune, _ int, _ int) for the others
+// use a slice for a list of arguments
+// create a new struct that would contain the arguments
+// concatenate two ints together? something like INT5|INT4
 
 
 // a rule is the entire line
