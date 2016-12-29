@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"os"
 	"runtime"
-	"sync"
 
 	"github.com/coolbry95/passutils/ruleprocessor/rules"
 )
@@ -40,7 +39,6 @@ func main() {
 	p := make(chan string, runtime.NumCPU())
 	out := make(chan string, runtime.NumCPU())
 
-	var wg sync.WaitGroup
 
 	go func() {
 		for print := range out {
@@ -58,9 +56,7 @@ func main() {
 					out <- rules.ApplyRules(ru, pass)
 				}
 			}
-			wg.Done()
 		}()
-		wg.Add(1)
 	}
 
 	scanning := bufio.NewScanner(wordlist)
@@ -70,6 +66,5 @@ func main() {
 	}
 
 	close(p)
-	wg.Wait()
 	close(out)
 }
